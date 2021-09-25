@@ -12,7 +12,7 @@
 在命令行窗口下使用pip进行安装ererytools库
 
 ```shell
-pip install ererytools
+pip install everytools
 ```
 
 
