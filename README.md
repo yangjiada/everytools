@@ -9,7 +9,7 @@
 
 ### 安装everytools库
 
-在命令行窗口下使用pip进行安装ererytools库
+在命令行窗口下使用pip进行安装everytools库
 
 ```shell
 pip install everytools
