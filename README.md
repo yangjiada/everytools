@@ -53,7 +53,7 @@ es.get_num_total_folder()  # 文件夹数量
 
 ### 获取搜索结果
 
-为了方便处理搜索结果输出采用pandas DataFrame进行保存，使用`result()`方法既可以输出结果。输出结果会包含name, path等信息，由于检索信息需要耗一定时间，数量比较多的情况下需要等待片刻。
+为了方便处理搜索结果输出采用pandas DataFrame进行保存，使用`results()`方法既可以输出结果。输出结果会包含name, path等信息，由于检索信息需要耗一定时间，数量比较多的情况下需要等待片刻。
 
 ```python
 df = es.results()  # 获取输出结果
@@ -127,12 +127,10 @@ es.version  # 版本号
 | :------: | :--------------------------------------: | :--------: |
 | 0.0.1.1  |          修复安装时环境依赖警告          | 2021-09-25 |
 | 0.0.1.0  | 提供everything基本搜索以及快速搜索方法。 | 2021-09-25 |
-|          |                                          |            |
-|          |                                          |            |
 
 ## 联系作者
 
 **作者(author)：Jan Yang**
 
-**Email：yang.jiada@foxmail.com**
+**邮箱(Email)：yang.jiada@foxmail.com**
 
