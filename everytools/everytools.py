@@ -219,7 +219,7 @@ class EveryTools:
         :param keywords: 关键词
         :return:
         """
-        self.search(f'ext: {keywords}')
+        self.search(f'ext:{ext} {keywords}')
 
     def search_in_located(self, path, keywords=''):
         """ 搜索路径下文件
@@ -253,21 +253,20 @@ class EveryTools:
         if max_num and max_num < num_total:
             num_total = max_num
         pages = math.ceil(num_total / page_size)  # 向上取整获取分页数
-        page_size = num_total if pages==1 else page_size
-        # EVERYTHING_REQUEST_EXTENSION | EVERYTHING_REQUEST_ATTRIBUTES
+        page_size = num_total if pages == 1 else page_size
+
+        #  | EVERYTHING_REQUEST_ATTRIBUTES
         # 分页去获取数据
         for page in range(0, pages):
             self.everything_dll.Everything_SetMax(page_size)  # 最大搜索结果
             self.everything_dll.Everything_SetOffset(page * page_size)  # 偏移量
-            self.everything_dll.Everything_SetRequestFlags(EVERYTHING_REQUEST_FILE_NAME | EVERYTHING_REQUEST_PATH |
-                                                           EVERYTHING_REQUEST_SIZE | EVERYTHING_REQUEST_DATE_CREATED |
-                                                           EVERYTHING_REQUEST_DATE_MODIFIED
-                                                           )
+            self.everything_dll.Everything_SetRequestFlags(
+                EVERYTHING_REQUEST_FILE_NAME | EVERYTHING_REQUEST_PATH | EVERYTHING_REQUEST_SIZE |
+                EVERYTHING_REQUEST_DATE_CREATED | EVERYTHING_REQUEST_DATE_MODIFIED | EVERYTHING_REQUEST_EXTENSION
+            )
 
             self.everything_dll.Everything_QueryW(True)
             num_total_page = self.everything_dll.Everything_GetNumResults()
-
-            items = []
 
             for i in range(num_total_page):
                 file_name = self.everything_dll.Everything_GetResultFileNameW(i)
@@ -281,14 +280,13 @@ class EveryTools:
                 else:
                     created_time = get_time(buffer_created_time)
 
-                #
+                # 获取查询信息
                 self.everything_dll.Everything_GetResultDateModified(i, buffer_modified_time)
                 modified_time = get_time(buffer_modified_time)
-                # 大小
-                self.everything_dll.Everything_GetResultSize(i, buffer_size)
+                self.everything_dll.Everything_GetResultSize(i, buffer_size)  # 大小
                 file_size = buffer_size.value
-                file_extension = self.everything_dll.Everything_GetResultExtensionW(i)
-                attributes = self.everything_dll.Everything_GetResultAttributes(i)
+                file_extension = self.everything_dll.Everything_GetResultExtensionW(i)  # 拓展
+                # attributes = self.everything_dll.Everything_GetResultAttributes(i)
                 is_file = self.everything_dll.Everything_IsFileResult(i)
                 is_folder = self.everything_dll.Everything_IsFolderResult(i)
                 is_volume = self.everything_dll.Everything_IsVolumeResult(i)
@@ -299,31 +297,27 @@ class EveryTools:
                     file_size,
                     created_time,
                     modified_time,
+                    file_extension,
                     is_file,
                     is_folder,
                     is_volume
                 ]
 
-                items.append(item)
-            columns = [
-                'name',
-                'path',
-                'size',
-                'created_date',
-                'modified_date',
-                'is_file',
-                'is_folder',
-                'is_volume'
-            ]
-            page_result = pd.DataFrame(items, columns=columns)
-            page_result_list.append(page_result)
-            # return items
-            # self.everything_dll.Everything_Reset()
+                page_result_list.append(item)
 
-        if len(page_result_list) > 0:
-            return pd.concat(page_result_list)
-        else:
-            return None
+        columns = [
+            'name',
+            'path',
+            'size',
+            'created_date',
+            'modified_date',
+            'file_extension',
+            'is_file',
+            'is_folder',
+            'is_volume'
+        ]
+
+        return pd.DataFrame(page_result_list, columns=columns)
 
     def exit(self):
         """ 执行退出客户端操作，会失去连接
@@ -334,7 +328,9 @@ class EveryTools:
 
 if __name__ == '__main__':
     et = EveryTools()
-    et.search('文档')
+    # et.search('abcdefs')
+    et.search_ext('pdf', 'sql')
+    print('search keywords is:', et.get_search_keyword())
     print("get_num_total_results:", et.get_num_total_results())
     df = et.results()
     print(df.head())
