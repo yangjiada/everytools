@@ -12,6 +12,8 @@ import struct
 import ctypes
 import math
 import os
+import requests
+import zipfile
 
 # 定义变量
 import pandas as pd
@@ -53,19 +55,39 @@ def get_time(filetime):
     return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(microsecs))
 
 
+def download_dll(dll_dir):
+    os.makedirs(dll_dir, exist_ok=True)
+    url = 'https://www.voidtools.com/Everything-SDK.zip'
+    print(f'downloading dll from {url}')
+    response = requests.get(url)
+    with open('Everything-SDK.zip', 'wb') as f:
+        f.write(response.content)
+    print(f'extracting dll to {dll_dir}')
+    with zipfile.ZipFile('Everything-SDK.zip', 'r') as zip_ref:
+        for name in zip_ref.namelist():
+            if name.endswith('.dll'):
+                content = zip_ref.read(name)
+                with open(os.path.join(dll_dir, os.path.basename(name)), 'wb') as f:
+                    f.write(content)
+    os.remove('Everything-SDK.zip')
+    print('done')
+
+
 class EveryTools:
     def __init__(self, machine=64):
         self.machine = machine
 
         # dll导入
         if self.machine == 64:
-            dll_path = os.path.split(os.path.abspath(__file__))[0] + r'\dll\Everything64.dll'
+            dll_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'dll', 'Everything64.dll')
         elif self.machine == 32:
-            dll_path = os.path.split(os.path.abspath(__file__))[0] + r'\dll\Everything32.dll'
+            dll_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'dll', 'Everything32.dll')
         else:
             dll_path = None
 
-        print(dll_path)
+        if not os.path.exists(dll_path):
+            download_dll(os.path.dirname(dll_path))
+
         self.everything_dll = ctypes.WinDLL(dll_path)
 
         # 定义数据类型
