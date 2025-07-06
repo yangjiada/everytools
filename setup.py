@@ -17,7 +17,7 @@ setup(
     long_description=README,
     long_description_content_type='text/markdown',
     install_requires=INSTALL_PACKAGES,
-    version='0.0.1.2',
+    version='0.0.1.4',
     url='https://github.com/yangjiada/everytools',
     author='Jan Yang',
     author_email='yang.jiada@foxmail.com',
@@ -30,5 +30,5 @@ setup(
     package_data={
         '': ['dll/*.dll'],
     },
-    python_requires='>=3.6'
+    python_requires='>=3.9'
 )
