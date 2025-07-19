@@ -282,12 +282,62 @@ class DateFilter(Filter):
         """
         return self.by_created_date().after(date)
 
+    @classmethod
+    def today(cls) -> "DateFilter":
+        """创建今天的日期过滤器
+
+        Returns:
+            过滤器实例
+        """
+        filter_obj = cls()
+        filter_obj._start_date = "today"
+        return filter_obj
+
+    @classmethod
+    def yesterday(cls) -> "DateFilter":
+        """创建昨天的日期过滤器
+
+        Returns:
+            过滤器实例
+        """
+        filter_obj = cls()
+        filter_obj._start_date = "yesterday"
+        return filter_obj
+
+    @classmethod
+    def this_week(cls) -> "DateFilter":
+        """创建本周的日期过滤器
+
+        Returns:
+            过滤器实例
+        """
+        filter_obj = cls()
+        filter_obj._start_date = "thisweek"
+        return filter_obj
+
+    @classmethod
+    def last_week(cls) -> "DateFilter":
+        """创建上周的日期过滤器
+
+        Returns:
+            过滤器实例
+        """
+        filter_obj = cls()
+        filter_obj._start_date = "lastweek"
+        return filter_obj
+
     def to_query_string(self) -> str:
         """转换为Everything搜索查询字符串
 
         Returns:
             查询字符串
         """
+        # 处理特殊的日期关键词
+        special_dates = ["today", "yesterday", "thisweek", "lastweek"]
+
+        if self._start_date in special_dates:
+            return self._start_date
+
         # 根据日期类型选择前缀
         prefix_map = {"created": "dc", "modified": "dm", "accessed": "da"}
         prefix = prefix_map.get(self._type, "dm")

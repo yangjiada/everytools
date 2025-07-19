@@ -1,1 +1,1 @@
-twine upload --skip-existing --verbose --disable-progress-bar dist/*
+twine upload --skip-existing dist/*
