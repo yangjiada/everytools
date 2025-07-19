@@ -3,12 +3,26 @@
 
 from setuptools import setup, find_packages
 from os import path
+import re
 
 DIR = path.dirname(path.abspath(__file__))
 INSTALL_PACKAGES = open(path.join(DIR, "requirements.txt")).read().splitlines()
 
 with open(path.join(DIR, "README.md"), encoding="utf-8") as f:
     README = f.read()
+
+
+# 从__init__.py中读取版本号
+def get_version():
+    with open(path.join(DIR, "everytools", "__init__.py"), encoding="utf-8") as f:
+        content = f.read()
+        match = re.search(r'__version__\s*=\s*["\']([^"\']+)["\']', content)
+        if match:
+            return match.group(1)
+        raise RuntimeError("Unable to find version string.")
+
+
+VERSION = get_version()
 
 setup(
     name="everytools",
@@ -17,7 +31,7 @@ setup(
     long_description=README,
     long_description_content_type="text/markdown",
     install_requires=INSTALL_PACKAGES,
-    version="0.0.2.0",  # 更新版本号
+    version=VERSION,
     url="https://github.com/yangjiada/everytools",
     author="Jan Yang",
     author_email="yang.jiada@foxmail.com",
