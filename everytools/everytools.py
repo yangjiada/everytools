@@ -376,5 +376,5 @@ if __name__ == "__main__":
     print("search keywords is:", et.get_search_keyword())
     print("get_num_total_results:", et.get_num_total_results())
     result = et.results()
-    # print(list(result))  # 迭代器可以转为列表
+    print(list(result)[0])  # 迭代器可以转为列表
     # print(et.is_admin())

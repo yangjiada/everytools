@@ -208,7 +208,11 @@ class Search:
         max_results: Optional[int] = None,
         request_flags: RequestFlag = RequestFlag.FILE_NAME
         | RequestFlag.PATH
-        | RequestFlag.FULL_PATH_AND_FILE_NAME,
+        | RequestFlag.FULL_PATH_AND_FILE_NAME
+        | RequestFlag.SIZE
+        | RequestFlag.DATE_CREATED
+        | RequestFlag.DATE_MODIFIED
+        | RequestFlag.EXTENSION,
     ):
         """初始化搜索
 
